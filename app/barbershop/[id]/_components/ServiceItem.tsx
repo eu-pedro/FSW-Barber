@@ -11,17 +11,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/app/_components/ui/sheet'
-import { Barbershop, Service } from '@prisma/client'
+import { Barbershop, Booking, Service } from '@prisma/client'
 import { ptBR } from 'date-fns/locale/pt-BR'
 import { signIn, useSession } from 'next-auth/react'
 import Image from 'next/image'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { generateDayTimeList } from '../_helpers/Hours'
 import { format, setHours, setMinutes } from 'date-fns'
 import { saveBooking } from '../_actions/SaveBooking'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { getDayBookings } from '../_actions/GetDayBookings'
 
 interface ServiceItemProps {
   barbershop: Barbershop
@@ -39,7 +40,18 @@ export function ServiceItem({
   const [hour, setHour] = useState<string | undefined>(undefined)
   const [submitIsLoading, setSubmitIsLoading] = useState(false)
   const [sheeIsOpen, setSheetIsOpen] = useState(false)
+  const [dayBookings, setDayBookings] = useState<Booking[]>([])
   const router = useRouter()
+  useEffect(() => {
+    const refreshAvailableHours = async () => {
+      if (!date) return
+      const _dayBookings = await getDayBookings(barbershop.id, date)
+
+      setDayBookings(_dayBookings)
+    }
+
+    refreshAvailableHours()
+  }, [date, barbershop.id])
 
   function handleDateClick(date: Date | undefined) {
     setDate(date)
@@ -57,8 +69,27 @@ export function ServiceItem({
   }
 
   const timeList = useMemo(() => {
-    return date ? generateDayTimeList(date) : []
-  }, [date])
+    if (!date) return []
+    return generateDayTimeList(date).filter((time) => {
+      // se houver alguma reserva em 'dayBookings' com a hora e minutos igual a time, não incluir
+
+      const timeHour = Number(time.split(':')[0])
+      const timeMinutes = Number(time.split(':')[1])
+
+      const booking = dayBookings.find((booking) => {
+        const bookingHour = booking?.date?.getHours()
+        const bookingMinutes = booking?.date?.getMinutes()
+
+        return bookingHour === timeHour && bookingMinutes === timeMinutes
+      })
+
+      if (!booking) {
+        return true
+      } else {
+        return false
+      }
+    })
+  }, [date, dayBookings])
 
   async function handleBookingSubmit() {
     try {
