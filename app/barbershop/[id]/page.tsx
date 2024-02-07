@@ -40,6 +40,7 @@ export default async function BarbershopDetailsPage({
       <div className="px-5 flex flex-col gap-4 py-6">
         {barbershop.services.map((service) => (
           <ServiceItem
+            barbershop={barbershop}
             key={service.id}
             service={service}
             isAuthenticated={!!session?.user}

@@ -6,11 +6,12 @@ import { Card, CardContent } from '@/app/_components/ui/card'
 import {
   Sheet,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from '@/app/_components/ui/sheet'
-import { Service } from '@prisma/client'
+import { Barbershop, Service } from '@prisma/client'
 import { ptBR } from 'date-fns/locale/pt-BR'
 import { signIn } from 'next-auth/react'
 import Image from 'next/image'
@@ -19,12 +20,17 @@ import { generateDayTimeList } from '../_helpers/Hours'
 import { format } from 'date-fns'
 
 interface ServiceItemProps {
+  barbershop: Barbershop
   service: Service
   isAuthenticated: boolean
 }
 
-export function ServiceItem({ service, isAuthenticated }: ServiceItemProps) {
-  const [date, setDate] = useState<Date | undefined>(new Date())
+export function ServiceItem({
+  barbershop,
+  service,
+  isAuthenticated,
+}: ServiceItemProps) {
+  const [date, setDate] = useState<Date | undefined>(undefined)
   const [hour, setHour] = useState<string | undefined>(undefined)
 
   function handleDateClick(date: Date | undefined) {
@@ -45,6 +51,8 @@ export function ServiceItem({ service, isAuthenticated }: ServiceItemProps) {
   const timeList = useMemo(() => {
     return date ? generateDayTimeList(date) : []
   }, [date])
+
+  const isDisableButton = !hour || !date
 
   return (
     <Card>
@@ -119,7 +127,7 @@ export function ServiceItem({ service, isAuthenticated }: ServiceItemProps) {
                   {/* Mostrar lista de horários apenas se alguma data estiver selecionada */}
 
                   {date && (
-                    <div className="flex gap-3 overflow-x-auto py-6 px-5 border-y border-solid border-secondary [&::-webkit-scrollbar]:hidden ">
+                    <div className="flex gap-3 overflow-x-auto py-6 px-5 border-t border-solid border-secondary [&::-webkit-scrollbar]:hidden ">
                       {timeList.map((time) => (
                         <Button
                           variant={hour === time ? 'default' : 'outline'}
@@ -135,7 +143,7 @@ export function ServiceItem({ service, isAuthenticated }: ServiceItemProps) {
 
                   <div className="py-6 px-5 border-t border-solid border-secondary">
                     <Card>
-                      <CardContent className="p-3">
+                      <CardContent className="p-3 flex flex-col gap-3">
                         <div className="flex justify-between">
                           <h2 className="font-bold">{service.name}</h2>
                           <h3 className="font-bold text-sm">
@@ -159,13 +167,24 @@ export function ServiceItem({ service, isAuthenticated }: ServiceItemProps) {
 
                         {hour && (
                           <div className="flex justify-between">
-                            <h3 className="text-gray-400 text-sm">Data</h3>
+                            <h3 className="text-gray-400 text-sm">Horário</h3>
                             <h4 className="text-sm">{hour}</h4>
+                          </div>
+                        )}
+
+                        {hour && (
+                          <div className="flex justify-between">
+                            <h3 className="text-gray-400 text-sm">Barbearia</h3>
+                            <h4 className="text-sm">{barbershop.name}</h4>
                           </div>
                         )}
                       </CardContent>
                     </Card>
                   </div>
+
+                  <SheetFooter className="p-5">
+                    <Button disabled={isDisableButton}>Confimar reserva</Button>
+                  </SheetFooter>
                 </SheetContent>
               </Sheet>
             </div>
