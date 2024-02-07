@@ -72,6 +72,8 @@ export function ServiceItem({
       })
     } catch (error) {
       console.log(error)
+    } finally {
+      setSubmitIsLoading(false)
     }
   }
 
