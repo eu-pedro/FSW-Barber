@@ -6,9 +6,10 @@ import { Search } from './_components/Search'
 import { BookingItem } from '../_components/BookingItem'
 import { db } from '../_lib/prisma'
 import { BarbershopItem } from './_components/BarbershopItem'
+import { Booking } from '@prisma/client'
 
 export default async function Home() {
-  const barbershops = await db.barbershop.findMany({})
+  const barbershops: Booking[] = await db.barbershop.findMany({})
 
   return (
     <div>
@@ -31,7 +32,7 @@ export default async function Home() {
         <h2 className="text-xs uppercase text-gray-400 font-bold mb-3">
           Agendamentos
         </h2>
-        <BookingItem />
+        {/* <BookingItem /> */}
       </div>
 
       <div className="mt-6">
