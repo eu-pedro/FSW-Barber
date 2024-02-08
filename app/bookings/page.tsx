@@ -5,6 +5,7 @@ import { db } from '../_lib/prisma'
 import { BookingItem } from '../_components/BookingItem'
 import { authOptions } from '../_lib/auth'
 import { Booking } from '@prisma/client'
+import { isFuture, isPast } from 'date-fns'
 
 export default async function BookingsPage() {
   const session = await getServerSession(authOptions)
@@ -23,6 +24,9 @@ export default async function BookingsPage() {
     },
   })
 
+  const confirmedBookings = bookings.filter((booking) => isFuture(booking.date))
+  const finishedBookings = bookings.filter((booking) => isPast(booking.date))
+
   return (
     <>
       <Header />
@@ -35,7 +39,7 @@ export default async function BookingsPage() {
         </h2>
 
         <div className="flex flex-col gap-3">
-          {bookings.map((booking) => (
+          {confirmedBookings.map((booking) => (
             <BookingItem key={booking.id} booking={booking} />
           ))}
         </div>
@@ -45,7 +49,7 @@ export default async function BookingsPage() {
         </h2>
 
         <div className="flex flex-col gap-3">
-          {bookings.map((booking) => (
+          {finishedBookings.map((booking) => (
             <BookingItem key={booking.id} booking={booking} />
           ))}
         </div>

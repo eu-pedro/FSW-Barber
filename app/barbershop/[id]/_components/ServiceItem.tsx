@@ -60,6 +60,7 @@ export function ServiceItem({
   }
 
   function handleBookingClick() {
+    console.log(isAuthenticated)
     if (!isAuthenticated) {
       return signIn('google')
     }
