@@ -8,6 +8,7 @@ import { db } from '../_lib/prisma'
 import { BarbershopItem } from './_components/BarbershopItem'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../_lib/auth'
+import { Barbershop, Booking } from '@prisma/client'
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -58,7 +59,7 @@ export default async function Home() {
               Agendamentos
             </h2>
             <div className="px-5 mt-6 flex gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden">
-              {confirmedBookings.map((booking) => (
+              {confirmedBookings.map((booking: Booking) => (
                 <BookingItem key={booking.id} booking={booking} />
               ))}
             </div>
@@ -72,7 +73,7 @@ export default async function Home() {
         </h2>
 
         <div className="flex px-5 gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden">
-          {barbershops.map((barbershop) => (
+          {barbershops.map((barbershop: Barbershop) => (
             <BarbershopItem key={barbershop.id} barbershop={barbershop} />
           ))}
         </div>
@@ -84,7 +85,7 @@ export default async function Home() {
         </h2>
 
         <div className="flex px-5 gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden">
-          {barbershops.map((barbershop) => (
+          {barbershops.map((barbershop: Barbershop) => (
             <BarbershopItem key={barbershop.id} barbershop={barbershop} />
           ))}
         </div>
