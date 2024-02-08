@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { db } from '../_lib/prisma'
 import { BookingItem } from '../_components/BookingItem'
 import { authOptions } from '../_lib/auth'
+import { Booking } from '@prisma/client'
 
 export default async function BookingsPage() {
   const session = await getServerSession(authOptions)
@@ -52,7 +53,7 @@ export default async function BookingsPage() {
               Confirmados
             </h2>
             <div className="flex flex-col gap-3">
-              {confirmedBookings.map((booking) => (
+              {confirmedBookings.map((booking: Booking) => (
                 <BookingItem key={booking.id} booking={booking} />
               ))}
             </div>
@@ -65,7 +66,7 @@ export default async function BookingsPage() {
               Finalizados
             </h2>
             <div className="flex flex-col gap-3">
-              {finishedBookings.map((booking) => (
+              {finishedBookings.map((booking: Booking) => (
                 <BookingItem key={booking.id} booking={booking} />
               ))}
             </div>
