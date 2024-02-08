@@ -16,7 +16,7 @@ export function BarbershopItem({ barbershop }: BarbershopItemProps) {
   const router = useRouter()
 
   function handleBookingClick() {
-    router.push(`/barbershop/${barbershop.id}`)
+    router.push(`/barbershops/${barbershop.id}`)
   }
 
   return (
