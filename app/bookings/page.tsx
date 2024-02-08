@@ -14,11 +14,11 @@ export default async function BookingsPage() {
   }
 
   const [confirmedBookings, finishedBookings] = await Promise.all([
-    await db.booking.findMany({
+    db.booking.findMany({
       where: {
         userId: (session.user as any).id,
         date: {
-          lte: new Date(),
+          gte: new Date(),
         },
       },
       include: {
@@ -26,11 +26,11 @@ export default async function BookingsPage() {
         barbershop: true,
       },
     }),
-    await db.booking.findMany({
+    db.booking.findMany({
       where: {
         userId: (session.user as any).id,
         date: {
-          gte: new Date(),
+          lt: new Date(),
         },
       },
       include: {
