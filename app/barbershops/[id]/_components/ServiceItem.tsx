@@ -18,7 +18,7 @@ import { signIn, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
 import { generateDayTimeList } from '../_helpers/Hours'
-import { addDays, format, setHours, setHours, setMinutes } from 'date-fns'
+import { addDays, format, setHours, setMinutes } from 'date-fns'
 import { saveBooking } from '../_actions/SaveBooking'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -217,19 +217,21 @@ export function ServiceItem({
                     </div>
                   )}
 
-                  <BookingInfo
-                    booking={{
-                      barbershop,
-                      date:
-                        date &&
-                        hour &&
-                        setMinutes(
-                          setHours(date, Number(hour.split(':')[0])),
-                          Number(hour.split(':')[1]),
-                        ),
-                      service,
-                    }}
-                  />
+                  <div className="py-6 px-5 border-t border-solid border-secondary">
+                    <BookingInfo
+                      booking={{
+                        barbershop,
+                        date:
+                          date &&
+                          hour &&
+                          setMinutes(
+                            setHours(date, Number(hour.split(':')[0])),
+                            Number(hour.split(':')[1]),
+                          ),
+                        service,
+                      }}
+                    />
+                  </div>
 
                   <SheetFooter className="p-5">
                     <Button
