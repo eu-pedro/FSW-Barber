@@ -18,12 +18,13 @@ import { signIn, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
 import { generateDayTimeList } from '../_helpers/Hours'
-import { addDays, format, setHours, setMinutes } from 'date-fns'
+import { addDays, format, setHours, setHours, setMinutes } from 'date-fns'
 import { saveBooking } from '../_actions/SaveBooking'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { getDayBookings } from '../_actions/GetDayBookings'
+import { BookingInfo } from '@/app/_components/BookingInfo'
 
 interface ServiceItemProps {
   barbershop: Barbershop
@@ -216,46 +217,19 @@ export function ServiceItem({
                     </div>
                   )}
 
-                  <div className="py-6 px-5 border-t border-solid border-secondary">
-                    <Card>
-                      <CardContent className="p-3 flex flex-col gap-3">
-                        <div className="flex justify-between">
-                          <h2 className="font-bold">{service.name}</h2>
-                          <h3 className="font-bold text-sm">
-                            {Intl.NumberFormat('pt-BR', {
-                              style: 'currency',
-                              currency: 'BRL',
-                            }).format(Number(service.price))}
-                          </h3>
-                        </div>
-
-                        {date && (
-                          <div className="flex justify-between">
-                            <h3 className="text-gray-400 text-sm">Data</h3>
-                            <h4 className="text-sm">
-                              {format(date, "dd 'de' MMMM", {
-                                locale: ptBR,
-                              })}
-                            </h4>
-                          </div>
-                        )}
-
-                        {hour && (
-                          <div className="flex justify-between">
-                            <h3 className="text-gray-400 text-sm">Horário</h3>
-                            <h4 className="text-sm">{hour}</h4>
-                          </div>
-                        )}
-
-                        {hour && (
-                          <div className="flex justify-between">
-                            <h3 className="text-gray-400 text-sm">Barbearia</h3>
-                            <h4 className="text-sm">{barbershop.name}</h4>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </div>
+                  <BookingInfo
+                    booking={{
+                      barbershop,
+                      date:
+                        date &&
+                        hour &&
+                        setMinutes(
+                          setHours(date, Number(hour.split(':')[0])),
+                          Number(hour.split(':')[1]),
+                        ),
+                      service,
+                    }}
+                  />
 
                   <SheetFooter className="p-5">
                     <Button
