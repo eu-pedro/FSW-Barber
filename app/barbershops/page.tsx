@@ -3,6 +3,8 @@ import { Barbershop } from '@prisma/client'
 import { BarbershopItem } from '../(home)/_components/BarbershopItem'
 import { Header } from '../_components/Header'
 import { db } from '../_lib/prisma'
+import { redirect } from 'next/navigation'
+import { Search } from '../(home)/_components/Search'
 
 interface BarbershopsPageProps {
   searchParams: {
@@ -22,11 +24,14 @@ export default async function BarbershopPage({
     },
   })
 
+  if (!searchParams.search) return redirect('/')
+
   return (
     <>
       <Header />
 
-      <div className="px-5 py-6">
+      <div className="px-5 py-6 flex flex-col gap-6">
+        <Search defaultValues={{ search: searchParams.search }} />
         <h1 className="text-gray-400 text-bold text-xs uppercase">
           Resultados para &apos;{searchParams.search}&apos;
         </h1>
